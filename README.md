@@ -10,6 +10,9 @@ Android
 
 IOS
 
+## 🔗 Links
+[![pub.dev](https://img.shields.io/badge/pubs.dev-0.0.1-%232BB6F6)](https://pub.dev/packages/flutter_toast_message)
+
 
 ## Authors
 

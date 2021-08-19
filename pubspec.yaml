@@ -2,7 +2,7 @@ name: flutter_toast_message
 description: A new Flutter project.
 version: 0.0.1
 author: Vinay Mishra
-homepage:
+homepage: https://github.com/vinaykumar2197/device-info-plugin-flutter
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
