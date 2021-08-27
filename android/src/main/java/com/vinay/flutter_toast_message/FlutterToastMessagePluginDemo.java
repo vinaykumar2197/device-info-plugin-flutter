@@ -1,16 +1,15 @@
 package com.vinay.flutter_toast_message;
 
-import static android.app.Activity.RESULT_OK;
-import static androidx.core.app.ActivityCompat.startActivityForResult;
-
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.google.gson.Gson;
 import com.karza.aadhaarsdk.AadharActivity;
@@ -20,20 +19,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Array;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-
-import android.util.Log;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import android.app.Activity; // add this
-
-import io.flutter.embedding.android.FlutterActivity;
-import io.flutter.embedding.engine.FlutterEngine;
+import io.flutter.app.FlutterActivity;
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.embedding.engine.plugins.activity.ActivityAware;
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
@@ -41,10 +31,9 @@ import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
-import io.flutter.plugin.common.PluginRegistry;
 
 /** FlutterToastMessagePlugin */
-public class FlutterToastMessagePlugin implements FlutterPlugin, MethodCallHandler,ActivityAware, PluginRegistry.ActivityResultListener{
+public class FlutterToastMessagePluginDemo extends FlutterActivity  {
   /// The MethodChannel that will the communication between Flutter and native Android
   ///
   /// This local reference serves to register the plugin with the Flutter Engine and unregister it
@@ -53,39 +42,37 @@ public class FlutterToastMessagePlugin implements FlutterPlugin, MethodCallHandl
   private String karzaToken, clientName;
   private  String env;
   private static final String TAG = "FlutterToast";
-  private Activity activity;
+//  private Activity activity;
   private  Result result;
 
 
-
   @Override
-  public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
-    channel = new MethodChannel(flutterPluginBinding.getBinaryMessenger(), "flutter_toast_message");
-    channel.setMethodCallHandler(this);
-  }
-
-  @Override
-  public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
-      this.result = result;
+  public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
+    super.onCreate(savedInstanceState, persistentState);
+    channel = new MethodChannel(getFlutterView(), "flutter_toast_message");
+    channel.setMethodCallHandler(new MethodCallHandler() {
+      @Override
+      public void onMethodCall(@NonNull MethodCall call, @NonNull MethodChannel.Result resultCustom) {
+        result = resultCustom;
 //    channel.setMethodCallHandler(
 //            new MethodChannel.MethodCallHandler() {
 //              @Override
 //              public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
 ////                String url = call.argument("url");
 
-                switch (call.method){
-                  case "getPlatformVersion":
-                    result.success("Android " + android.os.Build.VERSION.RELEASE);
-                    break;
-                  case "startSdk":
-                    karzaToken =call.argument("token").toString();
-                    env =   call.argument("env").toString();
-                    clientName =  call.argument("client").toString();
+        switch (call.method){
+          case "getPlatformVersion":
+            result.success("Android " + Build.VERSION.RELEASE);
+            break;
+          case "startSdk":
+            karzaToken =call.argument("token").toString();
+            env =   call.argument("env").toString();
+            clientName =  call.argument("client").toString();
 
 //                    karzaToken ="eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyZXF1ZXN0X2lkIjoiMDRiOTA1YjMtY2YzMi00OWI0LTg1NTMtOWVjNWZjMTYxMmFjIiwidXNlcl9pZCI6MzkwNzUwLCJzY29wZSI6WyJhYWRoYWFyX3htbCIsInZpZGVvX2t5YyIsImxpdmVuZXNzIl0sImVudiI6InRlc3QiLCJjbGllbnRfaWQiOiJSYWluX0luY19iTTVCNXMiLCJzdGFnZSI6InRlc3QiLCJ1c2VyX3R5cGUiOiJjdXN0b21lciIsImV4cGlyeV90aW1lIjoiMjMtMDgtMjAyMVQxNzoxNDoyNSIsInRyYW5zYWN0aW9uSWQiOiI1ZWM3ZDkzMjA0MzExMWVjOThiMWNhNTU2N2JmMGUyNyJ9.-qXWZU9D9SkZlpSEq-AGXrzW67B1X3UqTVSkygvH1AM";
 //                    env =  EnvType.TEST.env;
 //                    clientName =  "";
-                    startSdk();
+            startSdk();
 
 //                    AadhaarXMLDatas aadhaarXMLDatas = new AadhaarXMLDatas();
 //                    HashMap<String, Object> map = new Gson().fromJson(jsonObj.toString(), HashMap.class);
@@ -96,24 +83,24 @@ public class FlutterToastMessagePlugin implements FlutterPlugin, MethodCallHandl
 //                    map.put("dob","21/03/1997");
 //                    result.success(map);
 //        result.success("Android " + android.os.Build.VERSION.RELEASE);
-                    break;
-                  case "getDeviceInfoAndroid":
+            break;
+          case "getDeviceInfoAndroid":
 
-                    JSONObject jsonObject = new JSONObject();
-                    JSONObject jsonObjectBuildVersion = new JSONObject();
+            JSONObject jsonObject = new JSONObject();
+            JSONObject jsonObjectBuildVersion = new JSONObject();
 
-                    try {
-                      jsonObjectBuildVersion.put("security_patch", Build.VERSION.SECURITY_PATCH);
-                      jsonObjectBuildVersion.put("release", Build.VERSION.RELEASE);
-                      jsonObjectBuildVersion.put("base_os", Build.VERSION.BASE_OS);
-                      jsonObjectBuildVersion.put("codename", Build.VERSION.CODENAME);
-                      jsonObjectBuildVersion.put("incremental", Build.VERSION.INCREMENTAL);
-                      jsonObjectBuildVersion.put("preview_sdk", Build.VERSION.PREVIEW_SDK_INT);
-                      jsonObjectBuildVersion.put("sdk", Build.VERSION.SDK_INT);
-                      jsonObject.put("version_details", jsonObjectBuildVersion);
-                      jsonObject.put("board", Build.BOARD);
-                      jsonObject.put("bootloader", Build.BOOTLOADER);
-                      jsonObject.put("brand", Build.BRAND);
+            try {
+              jsonObjectBuildVersion.put("security_patch", Build.VERSION.SECURITY_PATCH);
+              jsonObjectBuildVersion.put("release", Build.VERSION.RELEASE);
+              jsonObjectBuildVersion.put("base_os", Build.VERSION.BASE_OS);
+              jsonObjectBuildVersion.put("codename", Build.VERSION.CODENAME);
+              jsonObjectBuildVersion.put("incremental", Build.VERSION.INCREMENTAL);
+              jsonObjectBuildVersion.put("preview_sdk", Build.VERSION.PREVIEW_SDK_INT);
+              jsonObjectBuildVersion.put("sdk", Build.VERSION.SDK_INT);
+              jsonObject.put("version_details", jsonObjectBuildVersion);
+              jsonObject.put("board", Build.BOARD);
+              jsonObject.put("bootloader", Build.BOOTLOADER);
+              jsonObject.put("brand", Build.BRAND);
 
 //          JSONObject supportedJson = new JSONObject();
 //          if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
@@ -127,19 +114,19 @@ public class FlutterToastMessagePlugin implements FlutterPlugin, MethodCallHandl
 //            jsonObject.put("supported_abis",supportedJson);
 //          }
 
-                      jsonObject.put("brand", Build.BRAND);
-                      jsonObject.put("display", Build.DISPLAY);
-                      jsonObject.put("hardware", Build.HARDWARE);
-                      jsonObject.put("manufacturer", Build.MANUFACTURER);
-                      jsonObject.put("model", Build.MODEL);
-                      jsonObject.put("product", Build.PRODUCT);
-                      jsonObject.put("type", "android");
+              jsonObject.put("brand", Build.BRAND);
+              jsonObject.put("display", Build.DISPLAY);
+              jsonObject.put("hardware", Build.HARDWARE);
+              jsonObject.put("manufacturer", Build.MANUFACTURER);
+              jsonObject.put("model", Build.MODEL);
+              jsonObject.put("product", Build.PRODUCT);
+              jsonObject.put("type", "android");
 
-                    }
-                    catch (Exception ex){
-                      ex.printStackTrace();
-                    }
-                    result.success(String.valueOf(jsonObject));
+            }
+            catch (Exception ex){
+              ex.printStackTrace();
+            }
+            result.success(String.valueOf(jsonObject));
 
 //        Map<String, Object> build = new HashMap<>();
 //        build.put("board", Build.BOARD);
@@ -178,22 +165,16 @@ public class FlutterToastMessagePlugin implements FlutterPlugin, MethodCallHandl
 
 //        result.success(build);
 
-                    break;
-                  default:
-                    result.notImplemented();
-                    break;
-                }
+            break;
+          default:
+            result.notImplemented();
+            break;
+        }
 
-
-//                if (call.method.equals("openBrowser")) {
-//                  openBrowser(url);
-//                }
-//                else {
-//                  result.notImplemented();
-//                }
-//              }
-//            });
+      }
+    });
   }
+
 
 
 
@@ -212,29 +193,16 @@ public class FlutterToastMessagePlugin implements FlutterPlugin, MethodCallHandl
 
   private void startSdk() {
 //    Intent intent = new Intent(activity, AadharActivity.class);
-    Intent intent = new Intent(activity, AadharActivity.class);
+    Intent intent = new Intent(FlutterToastMessagePluginDemo.this, AadharActivity.class);
     intent.putExtra("KARZA-TOKEN", karzaToken);
     intent.putExtra("ENV", env);
     intent.putExtra("CLIENT", clientName);
-    activity.startActivityForResult(intent, 100);
+    startActivityForResult(intent, 100);
   }
 
-//  @Override
-//  protected void onCreate(@Nullable Bundle savedInstanceState) {
-//    super.onCreate(savedInstanceState);
-////    setContentView(R.layout.activity_aadhar);
-////    GeneratedPluginRegistrant.registerWith(this);
-//
-////    channel.setMethodCallHandler(this);
-//
-//  }
-
-
-
-
   @Override
-  public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
-//    super.onActivityResult(requestCode, resultCode, data);
+  public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
 
     if (resultCode == RESULT_OK && requestCode == 100) {
 
@@ -260,9 +228,7 @@ public class FlutterToastMessagePlugin implements FlutterPlugin, MethodCallHandl
 
 
       }
-      return true;
     }
-    return false;
   }
 
 
@@ -334,47 +300,6 @@ public class FlutterToastMessagePlugin implements FlutterPlugin, MethodCallHandl
   }
 
 
-  @Override
-  public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
-    channel.setMethodCallHandler(null);
-  }
-
-  @Override
-  public void onAttachedToActivity(@NonNull ActivityPluginBinding binding) {
-    activity = binding.getActivity();
-    binding.addActivityResultListener(this);
-  }
-
-  @Override
-  public void onDetachedFromActivityForConfigChanges() {
-    activity = null;
-  }
-
-  @Override
-  public void onReattachedToActivityForConfigChanges(@NonNull ActivityPluginBinding binding) {
-    activity = binding.getActivity();
-    binding.addActivityResultListener(this);
-  }
-
-  @Override
-  public void onDetachedFromActivity() {
-    activity = null;
-  }
-//
-//  @Override
-//  public void onDetachedFromActivityForConfigChanges() {
-//
-//  }
-//
-//  @Override
-//  public void onReattachedToActivityForConfigChanges(@NonNull ActivityPluginBinding binding) {
-//
-//  }
-//
-//  @Override
-//  public void onDetachedFromActivity() {
-//
-//  }
 
 
 //  @Override

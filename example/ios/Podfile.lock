@@ -2,10 +2,17 @@ PODS:
   - Flutter (1.0.0)
   - flutter_toast_message (0.0.1):
     - Flutter
+    - OfflineAadhaar
+  - OfflineAadhaar (0.2.0)
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
   - flutter_toast_message (from `.symlinks/plugins/flutter_toast_message/ios`)
+  - OfflineAadhaar
+
+SPEC REPOS:
+  https://bitbucket.org/ios-external/podspecs.git:
+    - OfflineAadhaar
 
 EXTERNAL SOURCES:
   Flutter:
@@ -15,8 +22,9 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
-  flutter_toast_message: 3b2b631768a99bc6f94ac7ba0fac4f641cfd5f77
+  flutter_toast_message: c5f672009443bfc171a9be980c9c0e1af4e01d2e
+  OfflineAadhaar: add1e788d8175e04cc5294bba154ba8e53b47506
 
-PODFILE CHECKSUM: aafe91acc616949ddb318b77800a7f51bffa2a4c
+PODFILE CHECKSUM: 0638554dcc4ac1f71ee5dfb72363ddee1e43f0d5
 
-COCOAPODS: 1.10.1
+COCOAPODS: 1.10.2
