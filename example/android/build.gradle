@@ -16,6 +16,61 @@ allprojects {
     }
 }
 
+allprojects {
+    repositories {
+        google()
+        jcenter()
+        maven { url "https://jitpack.io" }
+
+        maven {
+            credentials {
+                username "karza_android"
+                password "ZMQWUMGp2eSdexZkQMyQ"
+            }
+            authentication{
+                basic(BasicAuthentication)
+            }
+            url "https://api.bitbucket.org/2.0/repositories/" + "krzandroid/sdk/src/releases/"
+
+        }
+
+        maven {
+            credentials {
+                username "karza_android"
+                password "ZMQWUMGp2eSdexZkQMyQ"
+            }
+            authentication{
+                basic(BasicAuthentication)
+            }
+            url "https://api.bitbucket.org/2.0/repositories/" + "krzandroid/libinternal/src/releases/"
+
+        }
+//        maven {
+//            url "https://bitbucket.org/krzandroid/libinternal/raw/releases"
+//            credentials {
+//                username "karza_android"
+//                password "U45VU8DrmjQXBRF9ejdP"
+////                password "Karza@12345"
+//            }
+//            authentication{
+//                basic(BasicAuthentication)
+//            }
+//        }
+//
+//        maven {
+//            url "https://bitbucket.org/krzandroid/sdk/raw/releases"
+//            credentials {
+//                username "karza_android"
+//                password "U45VU8DrmjQXBRF9ejdP"
+////                password "Karza@12345"
+//            }
+//            authentication{
+//                basic(BasicAuthentication)
+//            }
+//        }
+    }
+}
+
 rootProject.buildDir = '../build'
 subprojects {
     project.buildDir = "${rootProject.buildDir}/${project.name}"
